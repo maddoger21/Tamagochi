@@ -1,0 +1,8 @@
+<resources>
+    <string name="app_name">Tamagotchi</string>
+    <string name="tamagotchi">TAMAGOTCHI</string>
+    <string name="start">Start</string>
+    <string name="Health">Здоровье</string>
+    <string name="Hungry">Голод</string>
+    <string name="Energy">Энергия</string>
+</resources>
