@@ -21,8 +21,10 @@ import android.view.Window;
 import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.ponomarev.tamagotchi.adapter.FoodAdapter;
+import com.ponomarev.tamagotchi.database.AppDataBase;
 import com.ponomarev.tamagotchi.food.AppleFactory;
 import com.ponomarev.tamagotchi.food.CoffeeFactory;
 import com.ponomarev.tamagotchi.food.ColaFactory;
@@ -67,6 +69,8 @@ public class GameActivity extends AppCompatActivity implements Serializable {
         Character.getCharacter().getLiveHungry().setValue("100");
         Character.getCharacter().getLiveEnergy().setValue("100");
         Character.getCharacter().getLiveMoney().setValue("0");
+
+
 
         mediatorLiveData.addSource(Character.getCharacter().getLiveHealth(), new Observer<String>() {
             @Override
@@ -120,7 +124,7 @@ public class GameActivity extends AppCompatActivity implements Serializable {
         Intent intentMyStatusService = new Intent(this, StatusService.class);
         startService(intentMyStatusService);
 
-
+        LoadData();
     }
 
 
@@ -134,7 +138,20 @@ public class GameActivity extends AppCompatActivity implements Serializable {
 
     }
 
+    public void LoadData(){
+        AppDataBase dataBase = AppDataBase.getDbInstance(this.getApplicationContext());
+        Character.getCharacter().getLiveHealth().setValue(dataBase.userDao().getCharacterData().getLiveHealth().getValue());
+        Character.getCharacter().getLiveHungry().setValue(dataBase.userDao().getCharacterData().getLiveHungry().getValue());
+        Character.getCharacter().getLiveEnergy().setValue(dataBase.userDao().getCharacterData().getLiveEnergy().getValue());
+        Character.getCharacter().getLiveMoney().setValue(dataBase.userDao().getCharacterData().getLiveMoney().getValue());
+    }
 
+    public void SaveData(View view){
+        AppDataBase dataBase = AppDataBase.getDbInstance(this.getApplicationContext());
+        dataBase.userDao().delete(dataBase.userDao().getCharacterData());
+        dataBase.userDao().setCharacterData(Character.getCharacter());
+        Toast.makeText(this, "Данные сохранены", Toast.LENGTH_SHORT).show();
+    }
 //    public void Eat(View view){
 //        if (Integer.parseInt(Character.getCharacter().getLiveHungry().getValue())+5 > 100){
 //            return;

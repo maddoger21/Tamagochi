@@ -2,21 +2,36 @@ package com.ponomarev.tamagotchi.model;
 
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
+import androidx.room.ColumnInfo;
+import androidx.room.Entity;
+import androidx.room.PrimaryKey;
+import androidx.room.TypeConverters;
 
+import com.ponomarev.tamagotchi.database.DataConverter;
+
+
+@Entity
+@TypeConverters({DataConverter.class})
 public class Character {
+
+    @PrimaryKey(autoGenerate = true)
+    private int id;
+    @ColumnInfo(name = "character")
     private static Character character;
+    //@ColumnInfo(name = "health")
     public MutableLiveData<String> liveDataHealth = new MutableLiveData<>();
+    //@ColumnInfo(name = "energy")
     public MutableLiveData<String> liveDataEnergy = new MutableLiveData<>();
+    //@ColumnInfo(name = "hungry")
     public MutableLiveData<String> liveDataHungry = new MutableLiveData<>();
+    //@ColumnInfo(name = "money")
     public MutableLiveData<String> liveDataMoney = new MutableLiveData<>();
 
 //    private static int health = 100;
 //    private static int energy = 100;
 //    private static int hungry = 100;
 
-    private Character() {
-
-    }
+    public Character() {};
 
     public static Character getCharacter(){
         if (character == null){
@@ -25,6 +40,7 @@ public class Character {
 
         return character;
     }
+
     public MutableLiveData<String> getLiveHealth(){
         return liveDataHealth;
     }
@@ -38,7 +54,14 @@ public class Character {
         return liveDataMoney;
     }
 
-//    public int getEnergy() {
+    public int getId() {
+        return id;
+    }
+
+    public void setId(int id) {
+        this.id = id;
+    }
+    //    public int getEnergy() {
 //        return energy;
 //    }
 //
