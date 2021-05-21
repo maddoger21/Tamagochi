@@ -65,10 +65,10 @@ public class GameActivity extends AppCompatActivity implements Serializable {
 
         //Update update = new Update(progressBarHealth);
         //update.execute();
-        Character.getCharacter().getLiveHealth().setValue("100");
-        Character.getCharacter().getLiveHungry().setValue("100");
-        Character.getCharacter().getLiveEnergy().setValue("100");
-        Character.getCharacter().getLiveMoney().setValue("0");
+//        Character.getCharacter().getLiveHealth().setValue("100");
+//        Character.getCharacter().getLiveHungry().setValue("100");
+//        Character.getCharacter().getLiveEnergy().setValue("100");
+//        Character.getCharacter().getLiveMoney().setValue("0");
 
 
 
@@ -107,9 +107,9 @@ public class GameActivity extends AppCompatActivity implements Serializable {
                 progressBarHungry.setProgress(Integer.parseInt(Character.getCharacter().getLiveHungry().getValue()));
                 progressBarEnergy.setProgress(Integer.parseInt(Character.getCharacter().getLiveEnergy().getValue()));
                 money.setText("Количество денег: " + Character.getCharacter().liveDataMoney.getValue());
-                if (    Integer.parseInt(Character.getCharacter().getLiveHealth().getValue()) == 0 ||
-                        Integer.parseInt(Character.getCharacter().getLiveHungry().getValue()) == 0 ||
-                        Integer.parseInt(Character.getCharacter().getLiveEnergy().getValue()) == 0){
+                if (    Integer.parseInt(Character.getCharacter().getLiveHealth().getValue()) <= 0 ||
+                        Integer.parseInt(Character.getCharacter().getLiveHungry().getValue()) <= 0 ||
+                        Integer.parseInt(Character.getCharacter().getLiveEnergy().getValue()) <= 0){
 
                     Context nowScene = GameActivity.this;
                     Class nextScene = EndActivity.class;
@@ -140,17 +140,26 @@ public class GameActivity extends AppCompatActivity implements Serializable {
 
     public void LoadData(){
         AppDataBase dataBase = AppDataBase.getDbInstance(this.getApplicationContext());
-        Character.getCharacter().getLiveHealth().setValue(dataBase.userDao().getCharacterData().getLiveHealth().getValue());
-        Character.getCharacter().getLiveHungry().setValue(dataBase.userDao().getCharacterData().getLiveHungry().getValue());
-        Character.getCharacter().getLiveEnergy().setValue(dataBase.userDao().getCharacterData().getLiveEnergy().getValue());
-        Character.getCharacter().getLiveMoney().setValue(dataBase.userDao().getCharacterData().getLiveMoney().getValue());
+        if (dataBase.userDao().getCharacterData() != null) {
+            Character.getCharacter().getLiveHealth().setValue(dataBase.userDao().getCharacterData().getLiveHealth().getValue());
+            Character.getCharacter().getLiveHungry().setValue(dataBase.userDao().getCharacterData().getLiveHungry().getValue());
+            Character.getCharacter().getLiveEnergy().setValue(dataBase.userDao().getCharacterData().getLiveEnergy().getValue());
+            Character.getCharacter().getLiveMoney().setValue(dataBase.userDao().getCharacterData().getLiveMoney().getValue());
+        }
+        else {
+            Character.getCharacter().getLiveHealth().setValue("100");
+            Character.getCharacter().getLiveHungry().setValue("100");
+            Character.getCharacter().getLiveEnergy().setValue("100");
+            Character.getCharacter().getLiveMoney().setValue("0");
+            dataBase.userDao().setCharacterData(Character.getCharacter());
+        }
     }
 
-    public void SaveData(View view){
+    public void SaveData(){
         AppDataBase dataBase = AppDataBase.getDbInstance(this.getApplicationContext());
         dataBase.userDao().delete(dataBase.userDao().getCharacterData());
         dataBase.userDao().setCharacterData(Character.getCharacter());
-        Toast.makeText(this, "Данные сохранены", Toast.LENGTH_SHORT).show();
+        //Toast.makeText(this, "Данные сохранены", Toast.LENGTH_SHORT).show();
     }
 //    public void Eat(View view){
 //        if (Integer.parseInt(Character.getCharacter().getLiveHungry().getValue())+5 > 100){
@@ -175,5 +184,9 @@ public class GameActivity extends AppCompatActivity implements Serializable {
         Character.getCharacter().getLiveEnergy().setValue(String.valueOf(Integer.parseInt(Character.getCharacter().getLiveEnergy().getValue())-1));
     }
 
-
+    @Override
+    protected void onDestroy() {
+        SaveData();
+        super.onDestroy();
+    }
 }

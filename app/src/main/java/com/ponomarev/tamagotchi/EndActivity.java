@@ -7,6 +7,8 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
 
+import com.ponomarev.tamagotchi.database.AppDataBase;
+
 public class EndActivity extends AppCompatActivity {
 
     @Override
@@ -15,9 +17,18 @@ public class EndActivity extends AppCompatActivity {
         setContentView(R.layout.activity_end);
     }
         public void Restart(View view) {
+            changeToBegin();
+            deleteData();
+        }
+
+        public void changeToBegin(){
             Context nowScene = EndActivity.this;
             Class nextScene = MainActivity.class;
             Intent changeScene = new Intent(nowScene, nextScene);
             startActivity(changeScene);
+        }
+        public void deleteData(){
+            AppDataBase dataBase = AppDataBase.getDbInstance(this.getApplicationContext());
+            dataBase.userDao().delete(dataBase.userDao().getCharacterData());
         }
 }

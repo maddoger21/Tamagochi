@@ -15,7 +15,6 @@ public interface CharacterDao {
     @Query("SELECT * FROM Character")
     Character getCharacterData();
 
-
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     void setCharacterData(Character character);
 

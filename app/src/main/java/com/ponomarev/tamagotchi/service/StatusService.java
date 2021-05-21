@@ -20,7 +20,11 @@ public class StatusService extends IntentService {
 
     @Override
     protected void onHandleIntent(Intent intent) {
-        while(Integer.parseInt(Character.getCharacter().getLiveHealth().getValue())>0 || Integer.parseInt(Character.getCharacter().getLiveHungry().getValue())>0 || Integer.parseInt(Character.getCharacter().getLiveEnergy().getValue())>0){
+        while(
+                Integer.parseInt(Character.getCharacter().getLiveHealth().getValue())>0 ||
+                Integer.parseInt(Character.getCharacter().getLiveHungry().getValue())>0 ||
+                Integer.parseInt(Character.getCharacter().getLiveEnergy().getValue())>0)
+        {
             Character.getCharacter().getLiveHealth().postValue(String.valueOf(Integer.parseInt(Character.getCharacter().getLiveHealth().getValue())-1));
             Character.getCharacter().getLiveHungry().postValue(String.valueOf(Integer.parseInt(Character.getCharacter().getLiveHungry().getValue())-1));
             Character.getCharacter().getLiveEnergy().postValue(String.valueOf(Integer.parseInt(Character.getCharacter().getLiveEnergy().getValue())-1));

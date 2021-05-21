@@ -3,17 +3,20 @@ class com.ponomarev.tamagotchi.food.ColaFactory {
 + IFood Create()
 }
 class com.ponomarev.tamagotchi.model.Character {
+- int id
 - {static} Character character
 + MutableLiveData<String> liveDataHealth
 + MutableLiveData<String> liveDataEnergy
 + MutableLiveData<String> liveDataHungry
 + MutableLiveData<String> liveDataMoney
-- <<Create>> Character()
++ <<Create>> Character()
 + {static} Character getCharacter()
 + MutableLiveData<String> getLiveHealth()
 + MutableLiveData<String> getLiveEnergy()
 + MutableLiveData<String> getLiveHungry()
 + MutableLiveData<String> getLiveMoney()
++ int getId()
++ void setId(int)
 }
 interface com.ponomarev.tamagotchi.food.IFoodFactory {
 ~ IFood Create()
@@ -31,9 +34,6 @@ class com.ponomarev.tamagotchi.food.Apple {
 + int getCost()
 }
 class com.ponomarev.tamagotchi.food.FishFactory {
-+ IFood Create()
-}
-class com.ponomarev.tamagotchi.food.AppleFactory {
 + IFood Create()
 }
 class com.ponomarev.tamagotchi.fragments.StoreFragment {
@@ -58,6 +58,9 @@ class com.ponomarev.tamagotchi.MainActivity {
 # void onCreate(Bundle)
 + void beginGame(View)
 }
+class com.ponomarev.tamagotchi.food.PotatoFactory {
++ IFood Create()
+}
 class com.ponomarev.tamagotchi.food.Fish {
 + {static} String name
 + {static} int EnergyRegen
@@ -70,7 +73,53 @@ class com.ponomarev.tamagotchi.food.Fish {
 + int hungryRestore()
 + int getCost()
 }
-class com.ponomarev.tamagotchi.food.PotatoFactory {
+interface com.ponomarev.tamagotchi.database.CharacterDao {
+~ Character getCharacterData()
+~ void setCharacterData(Character)
+~ void delete(Character)
+}
+class com.ponomarev.tamagotchi.food.Cola {
++ {static} String name
++ {static} int EnergyRegen
++ {static} int HealthRegen
++ {static} int HungryRegen
++ {static} int cost
++ String getName()
++ int energyRestore()
++ int healthRestore()
++ int hungryRestore()
++ int getCost()
+}
+class com.ponomarev.tamagotchi.food.Potato {
++ {static} String name
++ {static} int EnergyRegen
++ {static} int HealthRegen
++ {static} int HungryRegen
++ {static} int cost
++ String getName()
++ int energyRestore()
++ int healthRestore()
++ int hungryRestore()
++ int getCost()
+}
+abstract class com.ponomarev.tamagotchi.database.AppDataBase {
+- {static} AppDataBase INSTANCE
++ {abstract}CharacterDao userDao()
++ {static} AppDataBase getDbInstance(Context)
+}
+class com.ponomarev.tamagotchi.food.Pizza {
++ {static} String name
++ {static} int EnergyRegen
++ {static} int HealthRegen
++ {static} int HungryRegen
++ {static} int cost
++ String getName()
++ int energyRestore()
++ int healthRestore()
++ int hungryRestore()
++ int getCost()
+}
+class com.ponomarev.tamagotchi.food.AppleFactory {
 + IFood Create()
 }
 class com.ponomarev.tamagotchi.food.Juice {
@@ -89,11 +138,6 @@ class com.ponomarev.tamagotchi.EndActivity {
 # void onCreate(Bundle)
 + void Restart(View)
 }
-class com.ponomarev.tamagotchi.service.StatusService {
-+ ProgressBar progressBarHealth
-+ <<Create>> StatusService()
-# void onHandleIntent(Intent)
-}
 class com.ponomarev.tamagotchi.GameActivity {
 - ArrayList<IFood> foodArrayList
 - ArrayList<IFoodFactory> foodFactories
@@ -105,46 +149,17 @@ class com.ponomarev.tamagotchi.GameActivity {
 + ProgressBar progressBarEnergy
 # void onCreate(Bundle)
 + void Store(View)
++ void LoadData()
++ void SaveData(View)
 + void Work(View)
 }
-class com.ponomarev.tamagotchi.food.Cola {
-+ {static} String name
-+ {static} int EnergyRegen
-+ {static} int HealthRegen
-+ {static} int HungryRegen
-+ {static} int cost
-+ String getName()
-+ int energyRestore()
-+ int healthRestore()
-+ int hungryRestore()
-+ int getCost()
+class com.ponomarev.tamagotchi.service.StatusService {
++ ProgressBar progressBarHealth
++ <<Create>> StatusService()
+# void onHandleIntent(Intent)
 }
 class com.ponomarev.tamagotchi.food.CoffeeFactory {
 + IFood Create()
-}
-class com.ponomarev.tamagotchi.food.Potato {
-+ {static} String name
-+ {static} int EnergyRegen
-+ {static} int HealthRegen
-+ {static} int HungryRegen
-+ {static} int cost
-+ String getName()
-+ int energyRestore()
-+ int healthRestore()
-+ int hungryRestore()
-+ int getCost()
-}
-class com.ponomarev.tamagotchi.food.Pizza {
-+ {static} String name
-+ {static} int EnergyRegen
-+ {static} int HealthRegen
-+ {static} int HungryRegen
-+ {static} int cost
-+ String getName()
-+ int energyRestore()
-+ int healthRestore()
-+ int hungryRestore()
-+ int getCost()
 }
 class com.ponomarev.tamagotchi.adapter.FoodAdapter {
 - int numberItems
@@ -176,26 +191,31 @@ interface com.ponomarev.tamagotchi.food.IFood {
 class com.ponomarev.tamagotchi.food.JuiceFactory {
 + IFood Create()
 }
+class com.ponomarev.tamagotchi.database.DataConverter {
++ String fromCharacter(MutableLiveData<String>)
++ MutableLiveData<String> toCharacter(String)
+}
 
 
 com.ponomarev.tamagotchi.food.IFoodFactory <|.. com.ponomarev.tamagotchi.food.ColaFactory
 com.ponomarev.tamagotchi.food.IFood <|.. com.ponomarev.tamagotchi.food.Apple
 com.ponomarev.tamagotchi.food.IFoodFactory <|.. com.ponomarev.tamagotchi.food.FishFactory
-com.ponomarev.tamagotchi.food.IFoodFactory <|.. com.ponomarev.tamagotchi.food.AppleFactory
 androidx.fragment.app.Fragment <|-- com.ponomarev.tamagotchi.fragments.StoreFragment
 com.ponomarev.tamagotchi.food.IFood <|.. com.ponomarev.tamagotchi.food.Coffee
 androidx.appcompat.app.AppCompatActivity <|-- com.ponomarev.tamagotchi.MainActivity
-com.ponomarev.tamagotchi.food.IFood <|.. com.ponomarev.tamagotchi.food.Fish
 com.ponomarev.tamagotchi.food.IFoodFactory <|.. com.ponomarev.tamagotchi.food.PotatoFactory
+com.ponomarev.tamagotchi.food.IFood <|.. com.ponomarev.tamagotchi.food.Fish
+com.ponomarev.tamagotchi.food.IFood <|.. com.ponomarev.tamagotchi.food.Cola
+com.ponomarev.tamagotchi.food.IFood <|.. com.ponomarev.tamagotchi.food.Potato
+androidx.room.RoomDatabase <|-- com.ponomarev.tamagotchi.database.AppDataBase
+com.ponomarev.tamagotchi.food.IFood <|.. com.ponomarev.tamagotchi.food.Pizza
+com.ponomarev.tamagotchi.food.IFoodFactory <|.. com.ponomarev.tamagotchi.food.AppleFactory
 com.ponomarev.tamagotchi.food.IFood <|.. com.ponomarev.tamagotchi.food.Juice
 androidx.appcompat.app.AppCompatActivity <|-- com.ponomarev.tamagotchi.EndActivity
-android.app.IntentService <|-- com.ponomarev.tamagotchi.service.StatusService
 java.io.Serializable <|.. com.ponomarev.tamagotchi.GameActivity
 androidx.appcompat.app.AppCompatActivity <|-- com.ponomarev.tamagotchi.GameActivity
-com.ponomarev.tamagotchi.food.IFood <|.. com.ponomarev.tamagotchi.food.Cola
+android.app.IntentService <|-- com.ponomarev.tamagotchi.service.StatusService
 com.ponomarev.tamagotchi.food.IFoodFactory <|.. com.ponomarev.tamagotchi.food.CoffeeFactory
-com.ponomarev.tamagotchi.food.IFood <|.. com.ponomarev.tamagotchi.food.Potato
-com.ponomarev.tamagotchi.food.IFood <|.. com.ponomarev.tamagotchi.food.Pizza
 com.ponomarev.tamagotchi.adapter.Adapter <|-- com.ponomarev.tamagotchi.adapter.FoodAdapter
 com.ponomarev.tamagotchi.adapter.FoodAdapter +.. com.ponomarev.tamagotchi.adapter.FoodAdapter.FoodViewHolder
 com.ponomarev.tamagotchi.adapter.ViewHolder <|-- com.ponomarev.tamagotchi.adapter.FoodAdapter.FoodViewHolder
